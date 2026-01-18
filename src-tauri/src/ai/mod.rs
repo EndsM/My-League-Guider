@@ -62,8 +62,10 @@ pub async fn save_ai_profile<R: Runtime>(
     api_key: String,
 ) -> Result<(), String> {
     // 1. Save API Key to OS Keyring securely
-    let entry = Entry::new(SERVICE_NAME, &profile.id).map_err(|e| e.to_string())?;
-    entry.set_password(&api_key).map_err(|e| e.to_string())?;
+    if !api_key.is_empty() {
+        let entry = Entry::new(SERVICE_NAME, &profile.id).map_err(|e| e.to_string())?;
+        entry.set_password(&api_key).map_err(|e| e.to_string())?;
+    }
 
     // 2. Load existing profiles
     let mut profiles = get_ai_profiles(app.clone()).await.unwrap_or_default();
