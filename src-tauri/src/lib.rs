@@ -10,7 +10,13 @@ fn greet(name: &str) -> String {
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .invoke_handler(tauri::generate_handler![greet, ai::send_chat_request])
+        .invoke_handler(tauri::generate_handler![
+            greet,
+            ai::send_chat_request,
+            ai::save_ai_profile,
+            ai::get_ai_profiles,
+            ai::delete_ai_profile
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
