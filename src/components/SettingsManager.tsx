@@ -1,5 +1,3 @@
-interface SettingsManagerProps {
+interface SettingsManagerProps {}
 
-}
-
-export default function SettingsManager() { }
+export default function SettingsManager() {}

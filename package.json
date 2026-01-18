@@ -8,7 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri",
-    "fmt":"npx prettier . --write"
+    "fmt": "npx prettier . --write"
   },
   "dependencies": {
     "@tauri-apps/api": "^2",

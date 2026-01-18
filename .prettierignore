@@ -1,0 +1,2 @@
+# Ignore the tauri path, which will use cargo fmt instead
+src-tauri
