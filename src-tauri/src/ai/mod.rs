@@ -67,7 +67,7 @@ pub async fn save_ai_profile<R: Runtime>(
 
     // 2. Load existing profiles
     let mut profiles = get_ai_profiles(app.clone()).await.unwrap_or_default();
-    
+
     // 3. Update or Add new profile
     if let Some(idx) = profiles.iter().position(|p| p.id == profile.id) {
         profiles[idx] = profile;
@@ -114,23 +114,27 @@ pub async fn delete_ai_profile<R: Runtime>(app: AppHandle<R>, id: String) -> Res
 
 #[tauri::command]
 pub async fn send_chat_request(
-    endpoint: String,
-    api_key: String,
-    model: String,
+    profile: AiProfile,
     messages: Vec<ChatMessage>,
     temperature: Option<f32>,
 ) -> Result<ChatCompletionResponse, String> {
     let client = Client::new();
 
+    let entry =
+        Entry::new(SERVICE_NAME, &profile.id).map_err(|e| format!("Keyring error: {}", e))?;
+    let api_key = entry.get_password().map_err(|_| {
+        "API Key not found in secure storage. Please update the profile.".to_string()
+    })?;
+
     let request_body = ChatCompletionRequest {
-        model,
+        model: profile.model,
         messages,
         temperature,
         max_tokens: None,
     };
 
     let response = client
-        .post(&endpoint)
+        .post(&profile.endpoint)
         .header("Content-Type", "application/json")
         .header("Authorization", format!("Bearer {}", api_key))
         .json(&request_body)
