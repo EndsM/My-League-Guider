@@ -61,23 +61,51 @@ pub async fn save_ai_profile<R: Runtime>(
     profile: AiProfile,
     api_key: String,
 ) -> Result<(), String> {
-    // 1. Save API Key to OS Keyring securely
-    if !api_key.is_empty() {
-        let entry = Entry::new(SERVICE_NAME, &profile.id).map_err(|e| e.to_string())?;
-        entry.set_password(&api_key).map_err(|e| e.to_string())?;
+    let mut profiles = get_ai_profiles(app.clone()).await.unwrap_or_default();
+    let is_new_profile = !profiles.iter().any(|p| p.id == profile.id);
+
+    // Trim whitespace to prevent copy-paste errors
+    let clean_key = api_key.trim();
+
+    // 1. Handle Keyring Operations
+    if !clean_key.is_empty() {
+        // Attempt to save
+        let entry = Entry::new(SERVICE_NAME, &profile.id)
+            .map_err(|e| format!("Keyring init failed: {}", e))?;
+
+        entry
+            .set_password(clean_key)
+            .map_err(|e| format!("Failed to write to secure storage: {}", e))?;
+
+        // Verify the save worked by reading it back immediately
+        match entry.get_password() {
+            Ok(stored) if stored == clean_key => {
+                // Verification successful
+                println!("Key saved and verified for profile {}", profile.id);
+            }
+            Ok(_) => return Err("Secure storage data mismatch (saved vs read).".to_string()),
+            Err(e) => {
+                return Err(format!(
+                    "Secure storage verification failed. The OS did not persist the key: {}",
+                    e
+                ))
+            }
+        }
+    } else if is_new_profile {
+        println!(
+            "Warning: Saving new profile {} without an API key.",
+            profile.name
+        );
     }
 
-    // 2. Load existing profiles
-    let mut profiles = get_ai_profiles(app.clone()).await.unwrap_or_default();
-
-    // 3. Update or Add new profile
+    // 2. Update or Add new profile metadata
     if let Some(idx) = profiles.iter().position(|p| p.id == profile.id) {
         profiles[idx] = profile;
     } else {
         profiles.push(profile);
     }
 
-    // 4. Save metadata to JSON file
+    // 3. Save metadata to JSON file
     let path = get_profiles_path(&app)?;
     let json = serde_json::to_string_pretty(&profiles).map_err(|e| e.to_string())?;
     fs::write(path, json).map_err(|e| e.to_string())?;
@@ -122,11 +150,30 @@ pub async fn send_chat_request(
 ) -> Result<ChatCompletionResponse, String> {
     let client = Client::new();
 
+    println!(
+        "Fetching key for Profile ID: '{}' (Service: '{}')",
+        profile.id, SERVICE_NAME
+    );
+
     let entry =
-        Entry::new(SERVICE_NAME, &profile.id).map_err(|e| format!("Keyring error: {}", e))?;
-    let api_key = entry.get_password().map_err(|_| {
-        "API Key not found in secure storage. Please update the profile.".to_string()
-    })?;
+        Entry::new(SERVICE_NAME, &profile.id).map_err(|e| format!("Keyring init error: {}", e))?;
+
+    let api_key = match entry.get_password() {
+        Ok(key) => key,
+        Err(keyring::Error::NoEntry) => {
+            return Err(
+                "API Key not found in storage. Please Edit the profile and re-enter the key."
+                    .to_string(),
+            );
+        }
+        Err(keyring::Error::Ambiguous(_)) => {
+            return Err("Multiple keys found for this ID. Storage is ambiguous.".to_string());
+        }
+        Err(e) => {
+            println!("CRITICAL KEYRING ERROR: {:?}", e);
+            return Err(format!("OS Secure Storage Error: {}", e));
+        }
+    };
 
     let request_body = ChatCompletionRequest {
         model: profile.model,
