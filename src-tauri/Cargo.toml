@@ -25,7 +25,8 @@ serde_json = "1"
 
 reqwest = { version = "0.12", features = ["json"] }
 tokio = { version = "1", features = ["full"] }
-keyring = "3"
+keyring = { version = "3", features = ["windows-native", "apple-native", "linux-native"] }
+
 
 [dependencies.uuid]
 version = "1.19.0"
