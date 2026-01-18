@@ -1,6 +1,8 @@
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 
+const SERVICE_NAME: &str = "my-league-guider";
+
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ChatMessage {
     pub role: String,
