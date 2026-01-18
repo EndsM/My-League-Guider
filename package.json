@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "fmt":"npx prettier . --write"
   },
   "dependencies": {
     "@tauri-apps/api": "^2",
@@ -20,6 +21,7 @@
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "5.1.2",
+    "prettier": "3.8.0",
     "typescript": "~5.8.3",
     "vite": "7.3.1"
   }
