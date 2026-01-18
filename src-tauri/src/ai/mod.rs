@@ -4,6 +4,15 @@ use serde::{Deserialize, Serialize};
 const SERVICE_NAME: &str = "my-league-guider";
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct AiProfile {
+    // UUID
+    pub id: String,
+    pub name: String,
+    pub endpoint: String,
+    pub model: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ChatMessage {
     pub role: String,
     pub content: String,
