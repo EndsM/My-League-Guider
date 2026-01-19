@@ -107,16 +107,17 @@ export default function SettingsManager() {
   }
 
   return (
-    <div>
+    <div className="settings-container">
       <h2>AI Profiles Configuration</h2>
 
       {/* Editor Form */}
-      <div>
+      <div className="profile-editor">
         <h3>{isEditing ? "Edit Profile" : "Add New Profile"}</h3>
         <form onSubmit={handleSave}>
-          <div>
-            <label htmlFor="name">Profile Name (e.g., OpenAI, Local LLM)</label>
-            <br />
+          <div className="form-group">
+            <label className="form-label" htmlFor="name">
+              Profile Name (e.g., OpenAI, Local LLM)
+            </label>
             <input
               id="name"
               name="name"
@@ -125,11 +126,11 @@ export default function SettingsManager() {
               placeholder="My Assistant"
             />
           </div>
-          <br />
 
-          <div>
-            <label htmlFor="endpoint">API Endpoint</label>
-            <br />
+          <div className="form-group">
+            <label className="form-label" htmlFor="endpoint">
+              API Endpoint
+            </label>
             <input
               id="endpoint"
               name="endpoint"
@@ -138,11 +139,11 @@ export default function SettingsManager() {
               placeholder="https://api.openai.com/v1/chat/completions"
             />
           </div>
-          <br />
 
-          <div>
-            <label htmlFor="model">Model Name</label>
-            <br />
+          <div className="form-group">
+            <label className="form-label" htmlFor="model">
+              Model Name
+            </label>
             <input
               id="model"
               name="model"
@@ -151,13 +152,11 @@ export default function SettingsManager() {
               placeholder="gpt-4o"
             />
           </div>
-          <br />
 
-          <div>
-            <label htmlFor="apiKey">
+          <div className="form-group">
+            <label className="form-label" htmlFor="apiKey">
               API Key {isEditing && "(Leave blank to keep existing)"}
             </label>
-            <br />
             <input
               id="apiKey"
               name="apiKey"
@@ -167,15 +166,18 @@ export default function SettingsManager() {
               placeholder="sk-..."
             />
           </div>
-          <br />
 
-          <div>
+          <div className="profile-actions">
             {isEditing && (
-              <button type="button" onClick={resetForm}>
+              <button
+                type="button"
+                className="btn-secondary"
+                onClick={resetForm}
+              >
                 Cancel
               </button>
             )}
-            <button type="submit" disabled={loading}>
+            <button type="submit" className="btn-primary" disabled={loading}>
               {loading
                 ? "Saving..."
                 : isEditing
@@ -186,35 +188,37 @@ export default function SettingsManager() {
         </form>
       </div>
 
-      <hr style={{ margin: "2rem 0" }} />
+      <hr className="divider" />
 
       {/* List of Profiles */}
       <h3>Existing Profiles</h3>
       {profiles.length === 0 ? (
-        <p style={{ opacity: 0.6 }}>No profiles found. Create one above.</p>
+        <p className="profile-meta">No profiles found. Create one above.</p>
       ) : (
-        <div>
+        <div className="profile-list">
           {profiles.map((profile) => (
-            <div
-              key={profile.id}
-              style={{
-                border: "1px solid #ccc",
-                borderRadius: "8px",
-                padding: "1rem",
-                marginBottom: "1rem",
-              }}
-            >
+            <div key={profile.id} className="profile-card">
               <h3>{profile.name}</h3>
-              <p>
+              <p className="profile-meta">
                 <strong>Model:</strong> {profile.model}
               </p>
-              <p>
+              <p className="profile-meta">
                 <strong>URL:</strong> {profile.endpoint}
               </p>
 
-              <div style={{ display: "flex", gap: "10px" }}>
-                <button onClick={() => handleEdit(profile)}>Edit</button>
-                <button onClick={() => handleDelete(profile.id)}>Delete</button>
+              <div className="profile-actions">
+                <button
+                  className="btn-secondary"
+                  onClick={() => handleEdit(profile)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="btn-danger"
+                  onClick={() => handleDelete(profile.id)}
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ))}

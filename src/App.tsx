@@ -2,41 +2,59 @@ import { useState } from "react";
 import "./App.css";
 import SettingsManager from "./components/SettingsManager";
 
-type Tab = "chat" | "settings";
+type Tab = "dashboard" | "settings";
 
 function App() {
-  const [activeTab, setActiveTab] = useState<Tab>("chat");
+  const [activeTab, setActiveTab] = useState<Tab>("dashboard");
 
   return (
-    <main className="container">
-      {/* Navigation Tabs */}
-      <nav className="tabs-nav">
-        <button
-          className={`tab-btn ${activeTab === "chat" ? "active" : ""}`}
-          onClick={() => setActiveTab("chat")}
-        >
-          Main
-        </button>
-        <button
-          className={`tab-btn ${activeTab === "settings" ? "active" : ""}`}
-          onClick={() => setActiveTab("settings")}
-        >
-          Settings
-        </button>
-      </nav>
+    <div className="app-container">
+      {/* Sidebar */}
+      <aside className="sidebar">
+        <div className="sidebar-header">
+          <h2>League Guider</h2>
+        </div>
 
-      {/* Main Content Area */}
-      <section className="tab-content" style={{ padding: "2rem" }}>
-        {activeTab === "chat" && (
-          <div className="main-tab-content">
-            <h1>League Guider</h1>
-            <p>Start work on settings tab first.</p>
+        <nav className="nav-menu">
+          <button
+            className={`nav-item ${activeTab === "dashboard" ? "active" : ""}`}
+            onClick={() => setActiveTab("dashboard")}
+          >
+            Dashboard
+          </button>
+
+          <button
+            className={`nav-item ${activeTab === "settings" ? "active" : ""}`}
+            onClick={() => setActiveTab("settings")}
+          >
+            Settings
+          </button>
+        </nav>
+      </aside>
+
+      {/* Main Content */}
+      <main className="main-content">
+        {activeTab === "dashboard" && (
+          <div className="dashboard-view">
+            <h1>Dashboard</h1>
+            <p>Planed features:</p>
+            <div className="dashboard-card">
+              <p style={{ margin: 0, color: "var(--text-secondary)" }}>
+                Audio input and output for BP choices
+              </p>
+              <p style={{ margin: 0, color: "var(--text-secondary)" }}>
+                Context of the current version's heroes' stats
+              </p>
+              <p style={{ margin: 0, color: "var(--text-secondary)" }}>
+                BYOK approach and customizable endpoints
+              </p>
+            </div>
           </div>
         )}
 
         {activeTab === "settings" && <SettingsManager />}
-      </section>
-    </main>
+      </main>
+    </div>
   );
 }
 
