@@ -11,7 +11,7 @@ export function App() {
   return (
     <div className="bg-background text-foreground flex h-screen w-screen overflow-hidden">
       {/* Sidebar */}
-      <aside className="bg-muted/30 flex w-64 flex-col gap-4 border-r p-4">
+      <aside className="bg-muted/30 flex w-64 flex-col gap-4 border-r p-3">
         <div className="flex items-center gap-2 px-2 py-4">
           <h2 className="text-lg font-bold tracking-tight">League Guider</h2>
         </div>
@@ -45,7 +45,7 @@ export function App() {
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {/* Feature Cards styled as simplified Cards */}
-              <div className="bg-card text-card-foreground rounded-xl border p-6 shadow">
+              <div className="bg-card text-card-foreground border p-6 shadow">
                 <h3 className="mb-2 leading-none font-semibold tracking-tight">
                   BP Voice
                 </h3>
@@ -53,7 +53,7 @@ export function App() {
                   Audio input and output for BP choices
                 </p>
               </div>
-              <div className="bg-card text-card-foreground rounded-xl border p-6 shadow">
+              <div className="bg-card text-card-foreground border p-6 shadow">
                 <h3 className="mb-2 leading-none font-semibold tracking-tight">
                   Live Context
                 </h3>
@@ -61,7 +61,7 @@ export function App() {
                   Current version's hero stats integration
                 </p>
               </div>
-              <div className="bg-card text-card-foreground rounded-xl border p-6 shadow">
+              <div className="bg-card text-card-foreground border p-6 shadow">
                 <h3 className="mb-2 leading-none font-semibold tracking-tight">
                   BYOK
                 </h3>
