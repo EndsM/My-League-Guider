@@ -11,7 +11,7 @@ export function App() {
   return (
     <div className="bg-background text-foreground flex h-screen w-screen overflow-hidden">
       {/* Sidebar */}
-      <aside className="bg-muted/30 flex w-64 flex-col gap-4 border-r p-3">
+      <aside className="bg-muted/30 flex w-52 flex-col gap-4 border-r p-3">
         <div className="flex items-center gap-2 px-2 py-4">
           <h2 className="text-lg font-bold tracking-tight">League Guider</h2>
         </div>

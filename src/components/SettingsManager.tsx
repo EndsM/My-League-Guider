@@ -130,7 +130,7 @@ export default function SettingsManager() {
 
       <div className="grid items-start gap-8 lg:grid-cols-[1fr_300px]">
         {/* Left Column: Form */}
-        <Card>
+        <Card className="border">
           <CardHeader>
             <CardTitle>
               {isEditing ? "Edit Profile" : "Add New Profile"}
@@ -139,7 +139,7 @@ export default function SettingsManager() {
               Configure the connection details for your LLM provider.
             </CardDescription>
           </CardHeader>
-          <form onSubmit={handleSave}>
+          <form onSubmit={handleSave} className="flex flex-col gap-4">
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Profile Name</Label>
