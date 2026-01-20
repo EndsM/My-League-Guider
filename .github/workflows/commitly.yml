@@ -1,4 +1,4 @@
-name: "commitly"
+name: Commitly Build
 
 on:
   push:
