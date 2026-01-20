@@ -120,7 +120,7 @@ export default function SettingsManager() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="mx-auto max-w-4xl space-y-8">
       <div>
         <h2 className="text-3xl font-bold tracking-tight">AI Configuration</h2>
         <p className="text-muted-foreground mt-2">
@@ -128,7 +128,7 @@ export default function SettingsManager() {
         </p>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[1fr_300px] items-start">
+      <div className="grid items-start gap-8 lg:grid-cols-[1fr_300px]">
         {/* Left Column: Form */}
         <Card>
           <CardHeader>
@@ -218,7 +218,7 @@ export default function SettingsManager() {
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Saved Profiles</h3>
           {profiles.length === 0 ? (
-            <div className="text-sm text-muted-foreground italic border border-dashed p-4 rounded-md text-center">
+            <div className="text-muted-foreground rounded-md border border-dashed p-4 text-center text-sm italic">
               No profiles found.
             </div>
           ) : (
@@ -227,23 +227,23 @@ export default function SettingsManager() {
                 <Card key={profile.id} className="overflow-hidden">
                   <CardHeader className="p-4 pb-2">
                     <CardTitle className="text-base">{profile.name}</CardTitle>
-                    <CardDescription className="text-xs truncate">
+                    <CardDescription className="truncate text-xs">
                       {profile.model}
                     </CardDescription>
                   </CardHeader>
-                  <CardFooter className="p-2 bg-muted/40 flex justify-end gap-1">
+                  <CardFooter className="bg-muted/40 flex justify-end gap-1 p-2">
                     <Button
                       size="sm"
                       variant="ghost"
                       className="h-8 px-2"
                       onClick={() => handleEdit(profile)}
                     >
-                      <RiEditLine className="size-4 text-muted-foreground" />
+                      <RiEditLine className="text-muted-foreground size-4" />
                     </Button>
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="h-8 px-2 hover:text-destructive"
+                      className="hover:text-destructive h-8 px-2"
                       onClick={() => handleDelete(profile.id)}
                     >
                       <RiDeleteBinLine className="size-4" />

@@ -9,9 +9,9 @@ export function App() {
   const [activeTab, setActiveTab] = useState<Tab>("dashboard");
 
   return (
-    <div className="flex h-screen w-screen bg-background text-foreground overflow-hidden">
+    <div className="bg-background text-foreground flex h-screen w-screen overflow-hidden">
       {/* Sidebar */}
-      <aside className="w-64 border-r bg-muted/30 flex flex-col p-4 gap-4">
+      <aside className="bg-muted/30 flex w-64 flex-col gap-4 border-r p-4">
         <div className="flex items-center gap-2 px-2 py-4">
           <h2 className="text-lg font-bold tracking-tight">League Guider</h2>
         </div>
@@ -40,32 +40,32 @@ export function App() {
       {/* Main Content */}
       <main className="flex-1 overflow-y-auto p-8">
         {activeTab === "dashboard" && (
-          <div className="space-y-6 max-w-4xl mx-auto">
+          <div className="mx-auto max-w-4xl space-y-6">
             <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {/* Feature Cards styled as simplified Cards */}
-              <div className="rounded-xl border bg-card text-card-foreground shadow p-6">
-                <h3 className="font-semibold leading-none tracking-tight mb-2">
+              <div className="bg-card text-card-foreground rounded-xl border p-6 shadow">
+                <h3 className="mb-2 leading-none font-semibold tracking-tight">
                   BP Voice
                 </h3>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   Audio input and output for BP choices
                 </p>
               </div>
-              <div className="rounded-xl border bg-card text-card-foreground shadow p-6">
-                <h3 className="font-semibold leading-none tracking-tight mb-2">
+              <div className="bg-card text-card-foreground rounded-xl border p-6 shadow">
+                <h3 className="mb-2 leading-none font-semibold tracking-tight">
                   Live Context
                 </h3>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   Current version's hero stats integration
                 </p>
               </div>
-              <div className="rounded-xl border bg-card text-card-foreground shadow p-6">
-                <h3 className="font-semibold leading-none tracking-tight mb-2">
+              <div className="bg-card text-card-foreground rounded-xl border p-6 shadow">
+                <h3 className="mb-2 leading-none font-semibold tracking-tight">
                   BYOK
                 </h3>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   Bring Your Own Key & customizable endpoints
                 </p>
               </div>
