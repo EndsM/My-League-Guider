@@ -139,8 +139,12 @@ export default function SettingsManager() {
               Configure the connection details for your LLM provider.
             </CardDescription>
           </CardHeader>
-          <form onSubmit={handleSave} className="flex flex-col gap-4">
-            <CardContent className="space-y-4">
+          <CardContent>
+            <form
+              id="ai-profile-form"
+              onSubmit={handleSave}
+              className="space-y-4"
+            >
               <div className="space-y-2">
                 <Label htmlFor="name">Profile Name</Label>
                 <Input
@@ -192,26 +196,26 @@ export default function SettingsManager() {
                   onChange={handleInputChange}
                 />
               </div>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              {isEditing ? (
-                <Button type="button" variant="ghost" onClick={resetForm}>
-                  <RiCloseLine className="mr-2 size-4" /> Cancel
-                </Button>
-              ) : (
-                <div /> /* Spacer */
-              )}
-              <Button type="submit" disabled={loading}>
-                {loading ? (
-                  "Saving..."
-                ) : (
-                  <>
-                    <RiSaveLine className="mr-2 size-4" /> Save Profile
-                  </>
-                )}
+            </form>
+          </CardContent>
+          <CardFooter className="flex justify-between">
+            {isEditing ? (
+              <Button type="button" variant="ghost" onClick={resetForm}>
+                <RiCloseLine className="mr-2 size-4" /> Cancel
               </Button>
-            </CardFooter>
-          </form>
+            ) : (
+              <div />
+            )}
+            <Button type="submit" form="ai-profile-form" disabled={loading}>
+              {loading ? (
+                "Saving..."
+              ) : (
+                <>
+                  <RiSaveLine className="mr-2 size-4" /> Save Profile
+                </>
+              )}
+            </Button>
+          </CardFooter>
         </Card>
 
         {/* Right Column: List */}
