@@ -36,11 +36,12 @@ jobs:
             **Date:** ${{ github.event.head_commit.timestamp }}
 
             This release is automatically generated and contains the latest code.
+            If you see the release only contains the source, maybe wait for a while to let the build complete.
+            If the build failed, try open an issue.
           draft: false
           prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 
   publish-tauri:
     needs: create-release
