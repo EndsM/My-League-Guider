@@ -1,4 +1,4 @@
-name: "main"
+name: "commitly"
 
 on:
   push:
@@ -6,8 +6,44 @@ on:
       - master
   workflow_dispatch:
 
+concurrency:
+  group: ${{github.workflow}}-${{github.ref}}
+  cancel-in-progress: true
+
 jobs:
+  create-release:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Delete older release and tag
+        uses: dev-drprasad/delete-tag-and-release@v1.1
+        with:
+          delete_release: true
+          tag_name: commitly
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create new empty release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: commitly
+          name: "Commitly Build"
+          body: |
+            ## Commitly Build
+            **Commit:** `${{ github.sha }}`
+            **Date:** ${{ github.event.head_commit.timestamp }}
+
+            This release is automatically generated and contains the latest code.
+          draft: false
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
   publish-tauri:
+    needs: create-release
     permissions:
       contents: write
     strategy:
@@ -22,6 +58,7 @@ jobs:
     runs-on: ${{matrix.platform}}
     steps:
       - uses: actions/checkout@v4
+
       - name: install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
         run: |
@@ -51,9 +88,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
-          releaseName: "App v__VERSION__"
+          tagName: commitly
+          releaseName: "Commitly Build"
           releaseBody: "See the assets to download this version and install."
-          releaseDraft: true
-          prerelease: false
+          releaseDraft: false
+          prerelease: true
           args: ${{ matrix.args }}
