@@ -1,6 +1,23 @@
 import { useEffect, useState } from "react";
 import { AiProfile } from "../types";
 import { invoke } from "@tauri-apps/api/core";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  RiDeleteBinLine,
+  RiEditLine,
+  RiSaveLine,
+  RiCloseLine,
+} from "@remixicon/react";
 
 const DEFAULT_FORM_DATA = {
   id: "",
@@ -13,11 +30,9 @@ const DEFAULT_FORM_DATA = {
 export default function SettingsManager() {
   const [profiles, setProfiles] = useState<AiProfile[]>([]);
   const [loading, setLoading] = useState(false);
-
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA);
 
-  // Load profiles on mount
   useEffect(() => {
     loadProfiles();
   }, []);
@@ -69,7 +84,6 @@ export default function SettingsManager() {
 
     try {
       const id = isEditing && formData.id ? formData.id : crypto.randomUUID();
-
       const profilePayload = {
         id,
         name: formData.name,
@@ -77,7 +91,6 @@ export default function SettingsManager() {
         model: formData.model,
       };
 
-      // Call Rust command
       await invoke("save_ai_profile", {
         profile: profilePayload,
         apiKey: formData.apiKey,
@@ -107,123 +120,141 @@ export default function SettingsManager() {
   }
 
   return (
-    <div className="settings-container">
-      <h2>AI Profiles Configuration</h2>
-
-      {/* Editor Form */}
-      <div className="profile-editor">
-        <h3>{isEditing ? "Edit Profile" : "Add New Profile"}</h3>
-        <form onSubmit={handleSave}>
-          <div className="form-group">
-            <label className="form-label" htmlFor="name">
-              Profile Name (e.g., OpenAI, Local LLM)
-            </label>
-            <input
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              placeholder="My Assistant"
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label" htmlFor="endpoint">
-              API Endpoint
-            </label>
-            <input
-              id="endpoint"
-              name="endpoint"
-              value={formData.endpoint}
-              onChange={handleInputChange}
-              placeholder="https://api.openai.com/v1/chat/completions"
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label" htmlFor="model">
-              Model Name
-            </label>
-            <input
-              id="model"
-              name="model"
-              value={formData.model}
-              onChange={handleInputChange}
-              placeholder="gpt-4o"
-            />
-          </div>
-
-          <div className="form-group">
-            <label className="form-label" htmlFor="apiKey">
-              API Key {isEditing && "(Leave blank to keep existing)"}
-            </label>
-            <input
-              id="apiKey"
-              name="apiKey"
-              type="password"
-              value={formData.apiKey}
-              onChange={handleInputChange}
-              placeholder="sk-..."
-            />
-          </div>
-
-          <div className="profile-actions">
-            {isEditing && (
-              <button
-                type="button"
-                className="btn-secondary"
-                onClick={resetForm}
-              >
-                Cancel
-              </button>
-            )}
-            <button type="submit" className="btn-primary" disabled={loading}>
-              {loading
-                ? "Saving..."
-                : isEditing
-                  ? "Update Profile"
-                  : "Add Profile"}
-            </button>
-          </div>
-        </form>
+    <div className="max-w-4xl mx-auto space-y-8">
+      <div>
+        <h2 className="text-3xl font-bold tracking-tight">AI Configuration</h2>
+        <p className="text-muted-foreground mt-2">
+          Manage your AI providers and API keys securely.
+        </p>
       </div>
 
-      <hr className="divider" />
-
-      {/* List of Profiles */}
-      <h3>Existing Profiles</h3>
-      {profiles.length === 0 ? (
-        <p className="profile-meta">No profiles found. Create one above.</p>
-      ) : (
-        <div className="profile-list">
-          {profiles.map((profile) => (
-            <div key={profile.id} className="profile-card">
-              <h3>{profile.name}</h3>
-              <p className="profile-meta">
-                <strong>Model:</strong> {profile.model}
-              </p>
-              <p className="profile-meta">
-                <strong>URL:</strong> {profile.endpoint}
-              </p>
-
-              <div className="profile-actions">
-                <button
-                  className="btn-secondary"
-                  onClick={() => handleEdit(profile)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="btn-danger"
-                  onClick={() => handleDelete(profile.id)}
-                >
-                  Delete
-                </button>
+      <div className="grid gap-8 lg:grid-cols-[1fr_300px] items-start">
+        {/* Left Column: Form */}
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              {isEditing ? "Edit Profile" : "Add New Profile"}
+            </CardTitle>
+            <CardDescription>
+              Configure the connection details for your LLM provider.
+            </CardDescription>
+          </CardHeader>
+          <form onSubmit={handleSave}>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Profile Name</Label>
+                <Input
+                  id="name"
+                  name="name"
+                  placeholder="e.g., OpenAI, Local LLM"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                />
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="endpoint">API Endpoint</Label>
+                <Input
+                  id="endpoint"
+                  name="endpoint"
+                  placeholder="https://api.openai.com/v1/chat/completions"
+                  value={formData.endpoint}
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="model">Model Name</Label>
+                <Input
+                  id="model"
+                  name="model"
+                  placeholder="e.g., gpt-4o, llama-3"
+                  value={formData.model}
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="apiKey">
+                  API Key{" "}
+                  {isEditing && (
+                    <span className="text-muted-foreground font-normal">
+                      (Leave blank to keep existing)
+                    </span>
+                  )}
+                </Label>
+                <Input
+                  id="apiKey"
+                  name="apiKey"
+                  type="password"
+                  placeholder="sk-..."
+                  value={formData.apiKey}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </CardContent>
+            <CardFooter className="flex justify-between">
+              {isEditing ? (
+                <Button type="button" variant="ghost" onClick={resetForm}>
+                  <RiCloseLine className="mr-2 size-4" /> Cancel
+                </Button>
+              ) : (
+                <div /> /* Spacer */
+              )}
+              <Button type="submit" disabled={loading}>
+                {loading ? (
+                  "Saving..."
+                ) : (
+                  <>
+                    <RiSaveLine className="mr-2 size-4" /> Save Profile
+                  </>
+                )}
+              </Button>
+            </CardFooter>
+          </form>
+        </Card>
+
+        {/* Right Column: List */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold">Saved Profiles</h3>
+          {profiles.length === 0 ? (
+            <div className="text-sm text-muted-foreground italic border border-dashed p-4 rounded-md text-center">
+              No profiles found.
             </div>
-          ))}
+          ) : (
+            <div className="grid gap-3">
+              {profiles.map((profile) => (
+                <Card key={profile.id} className="overflow-hidden">
+                  <CardHeader className="p-4 pb-2">
+                    <CardTitle className="text-base">{profile.name}</CardTitle>
+                    <CardDescription className="text-xs truncate">
+                      {profile.model}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardFooter className="p-2 bg-muted/40 flex justify-end gap-1">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 px-2"
+                      onClick={() => handleEdit(profile)}
+                    >
+                      <RiEditLine className="size-4 text-muted-foreground" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 px-2 hover:text-destructive"
+                      onClick={() => handleDelete(profile.id)}
+                    >
+                      <RiDeleteBinLine className="size-4" />
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
