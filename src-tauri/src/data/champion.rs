@@ -39,17 +39,6 @@ pub struct ChampionInfo {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct ChampionImage {
-    pub full: String,
-    pub sprite: String,
-    pub group: String,
-    pub x: i32,
-    pub y: i32,
-    pub w: i32,
-    pub h: i32,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ChampionStats {
     pub hp: f64,
     #[serde(rename = "hpperlevel")]
