@@ -1,6 +1,7 @@
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
-use std::{path::PathBuf, str};
+use serde_json::Value;
+use std::{fs, path::PathBuf, str};
 use tauri::{AppHandle, Manager, Runtime};
 
 const VERSIONS_URL: &str = "https://ddragon.leagueoflegends.com/api/versions.json";
@@ -50,5 +51,30 @@ impl<R: Runtime> DataManager<R> {
             .first()
             .cloned()
             .ok_or_else(|| "No versions found".to_string())
+    }
+
+    pub fn get_local_version(&self) -> Option<String> {
+        let metadata_path = self.get_data_dir().join("metadata.json");
+        if metadata_path.exists() {
+            let content = fs::read_to_string(metadata_path).ok()?;
+            let metadata: Value = serde_json::from_str(&content).ok()?;
+            metadata["version"].as_str().map(|s| s.to_string())
+        } else {
+            None
+        }
+    }
+
+    pub async fn check_status(&self) -> Result<DataStatus, String> {
+        let latest = self.fetch_latest_version().await?;
+        let current = self.get_local_version();
+        Ok(DataStatus {
+            is_up_to_date: current.as_deref() == Some(&latest),
+            current_version: current,
+            latest_version: latest,
+        })
+    }
+
+    pub async fn update_data() {
+        
     }
 }
