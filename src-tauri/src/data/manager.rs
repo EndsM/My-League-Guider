@@ -4,8 +4,11 @@ use serde_json::Value;
 use std::{fs, path::PathBuf, str};
 use tauri::{AppHandle, Manager, Runtime};
 
+use crate::data::{champion::ChampionData, item::ItemData};
+
 const VERSIONS_URL: &str = "https://ddragon.leagueoflegends.com/api/versions.json";
 const BASE_CDN_URL: &str = "https://ddragon.leagueoflegends.com/cdn";
+const LANG_CODE: &str = "en_US";
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct DataStatus {
@@ -74,7 +77,67 @@ impl<R: Runtime> DataManager<R> {
         })
     }
 
-    pub async fn update_data() {
-        
+    // Downloads champion.json and item.json for the specific version
+    pub async fn update_data(&self, version: String) -> Result<(), String> {
+        let version_dir = self.get_version_dir(&version);
+        if !version_dir.exists() {
+            fs::create_dir_all(&version_dir).map_err(|e| e.to_string())?;
+        }
+
+        let champ_url = format!(
+            "{}/{}/data/{}/champion.json",
+            BASE_CDN_URL, version, LANG_CODE
+        );
+        let champ_data = self
+            .client
+            .get(&champ_url)
+            .send()
+            .await
+            .map_err(|e| format!("Failed to fetch champions: {}", e))?
+            .text()
+            .await
+            .map_err(|e| e.to_string())?;
+
+        fs::write(version_dir.join("champion.json"), &champ_data).map_err(|e| e.to_string())?;
+
+        let item_url = format!("{}/{}/data/{}/item.json", BASE_CDN_URL, version, LANG_CODE);
+        let item_data = self
+            .client
+            .get(&item_url)
+            .send()
+            .await
+            .map_err(|e| format!("Failed to fetch items: {}", e))?
+            .text()
+            .await
+            .map_err(|e| e.to_string())?;
+
+        fs::write(version_dir.join("item.json"), &item_data).map_err(|e| e.to_string())?;
+
+        let metadata = serde_json::json!({ "version": version });
+        fs::write(
+            self.get_data_dir().join("metadata.json"),
+            serde_json::to_string_pretty(&metadata).unwrap(),
+        )
+        .map_err(|e| e.to_string())?;
+
+        Ok(())
+    }
+
+    pub fn load_data(&self) -> Result<(ChampionData, ItemData), String> {
+        let version = self
+            .get_local_version()
+            .ok_or("No local data found. Please update.")?;
+        let dir = self.get_version_dir(&version);
+
+        let champ_content =
+            fs::read_to_string(dir.join("champion.json")).map_err(|e| e.to_string())?;
+        let champ_data: ChampionData =
+            serde_json::from_str(&champ_content).map_err(|e| format!("Champ Parse: {}", e))?;
+
+        let item_content = fs::read_to_string(dir.join("item.json")).map_err(|e| e.to_string())?;
+        let item_data: ItemData =
+            serde_json::from_str(&item_content).map_err(|e| format!("Item Parse: {}", e))?;
+
+        Ok((champ_data, item_data))
     }
 }
