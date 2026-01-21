@@ -1,5 +1,6 @@
 mod champion;
 mod item;
+mod manager;
 
 use serde::{Deserialize, Serialize};
 
