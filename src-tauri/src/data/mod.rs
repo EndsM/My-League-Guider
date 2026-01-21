@@ -2,12 +2,14 @@ mod champion;
 mod item;
 mod manager;
 
-use std::sync::Mutex;
-
+use crate::data::{
+    champion::{Champion, ChampionData},
+    item::ItemData,
+    manager::DataManager,
+};
 use serde::{Deserialize, Serialize};
+use std::sync::Mutex;
 use tauri::{AppHandle, Runtime, State};
-
-use crate::data::{champion::ChampionData, item::ItemData, manager::DataManager};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Image {
@@ -81,5 +83,20 @@ pub async fn load_local_data<R: Runtime>(
         Ok("Loaded successfully".to_string())
     } else {
         Ok("No local data found".to_string())
+    }
+}
+
+#[tauri::command]
+pub fn get_champions(state: State<'_, AppState>) -> Result<Vec<Champion>, String> {
+    let data = state.0.lock().map_err(|_| "Failed to lock state")?;
+
+    match &data.champions {
+        Some(champ_data) => {
+            let mut champs: Vec<Champion> = champ_data.data.values().cloned().collect();
+            champs.sort_by(|a, b| a.name.cmp(&b.name));
+
+            Ok(champs)
+        }
+        None => Err("Champion data not loaded in memory. Please load data first.".to_string()),
     }
 }

@@ -19,7 +19,8 @@ pub fn run() {
             ai::delete_ai_profile,
             data::get_data_status,
             data::update_data,
-            data::load_local_data
+            data::load_local_data,
+            data::get_champions
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
