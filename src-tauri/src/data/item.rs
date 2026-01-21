@@ -1,6 +1,7 @@
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-use serde::{Deserialize, Serialize};
+use crate::data::Image;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ItemData {
@@ -21,4 +22,27 @@ pub struct Item {
     pub colloq: String,
     #[serde(default)]
     pub plaintext: String,
+
+    // Crafting Hierarchy
+    #[serde(default)]
+    pub into: Vec<String>,
+    #[serde(default)]
+    pub from: Vec<String>,
+
+    // Data
+    pub image: Option<Image>,
+    #[serde(default)]
+    pub gold: ItemGold,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+pub struct ItemGold {
+    #[serde(default)]
+    pub base: u32,
+    #[serde(default)]
+    pub total: u32,
+    #[serde(default)]
+    pub sell: u32,
+    #[serde(default)]
+    pub purchasable: bool,
 }
