@@ -1,4 +1,16 @@
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+
+// Represent the data package we will get from API
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct ChampionData {
+    #[serde(rename = "type")]
+    pub data_type: String,
+    pub format: String,
+    pub version: String,
+    pub data: HashMap<String, Champion>,
+}
+
 // Let's use datadragon as the way to get data
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Champion {
@@ -6,6 +18,9 @@ pub struct Champion {
     pub key: String,
     pub name: String,
     pub title: String,
+
+    pub version: String,
+
     pub blurb: String,
     pub info: ChampionInfo,
     pub image: ChampionImage,
