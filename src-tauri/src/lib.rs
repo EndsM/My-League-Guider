@@ -16,7 +16,10 @@ pub fn run() {
             ai::send_chat_request,
             ai::save_ai_profile,
             ai::get_ai_profiles,
-            ai::delete_ai_profile
+            ai::delete_ai_profile,
+            data::get_data_status,
+            data::update_data,
+            data::load_local_data
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
