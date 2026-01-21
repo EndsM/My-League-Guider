@@ -10,6 +10,26 @@ pub struct ItemData {
     pub version: String,
     pub basic: Item,
     pub data: HashMap<String, Item>,
+
+    // Metadata
+    #[serde(default)]
+    pub groups: Vec<ItemGroup>,
+    #[serde(default)]
+    pub tree: Vec<ItemTree>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct ItemGroup {
+    pub id: String,
+    #[serde(rename = "MaxGroupOwnable")]
+    pub max_group_ownable: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct ItemTree {
+    pub header: String,
+    #[serde(default)]
+    pub tags: Vec<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -39,6 +59,9 @@ pub struct Item {
     pub maps: HashMap<String, bool>,
     #[serde(default)]
     pub stats: HashMap<String, f64>,
+
+    #[serde(default)]
+    pub effect: Option<HashMap<String, String>>,
 
     // Metadata / Mechanics
     pub depth: Option<u32>,
