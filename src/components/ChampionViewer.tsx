@@ -90,12 +90,12 @@ export default function ChampionViewer() {
     }
   }
 
-  // 1. Filter
+  // Filter
   const filtered = champions.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase()),
   );
 
-  // 2. Paginate
+  // Paginate
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedChampions = filtered.slice(
@@ -105,132 +105,131 @@ export default function ChampionViewer() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    // Scroll the grid container to top
-    document
-      .getElementById("champion-grid-top")
-      ?.scrollIntoView({ behavior: "smooth" });
+    document.getElementById("champion-scroll-container")?.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   };
 
   return (
-    <div className="flex h-full flex-col">
-      {/* Header / Control Panel - Fixed */}
-      <div className="border-border flex-none border-b p-8">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div className="space-y-1">
-            <h2 className="text-3xl font-bold tracking-tight">
-              Champion Database
-            </h2>
-            <div className="text-muted-foreground flex items-center gap-2 text-sm">
-              <span>Version:</span>
-              <Badge variant="outline" className="font-mono">
-                {status?.current_version || "Not Installed"}
-              </Badge>
-              {status?.latest_version &&
-                status.latest_version !== status.current_version && (
-                  <span className="text-xs text-amber-500">
-                    (New: {status.latest_version})
-                  </span>
-                )}
+    <div className="flex h-full w-full flex-col overflow-hidden">
+      {/* Header */}
+      <div className="border-border bg-background/95 supports-backdrop-filter:bg-background/60 z-20 flex-none border-b p-4 backdrop-blur-md">
+        <div className="flex flex-col gap-4">
+          {/* Title & Actions */}
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-baseline gap-3">
+              <h2 className="text-xl font-bold tracking-tight sm:text-2xl">
+                Champions
+              </h2>
+              {status?.current_version ? (
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary" className="font-mono text-[10px]">
+                    v{status.current_version}
+                  </Badge>
+                  {status.latest_version !== status.current_version && (
+                    <Badge
+                      variant="outline"
+                      className="border-amber-500/20 text-[10px] text-amber-500"
+                    >
+                      Update: {status.latest_version}
+                    </Badge>
+                  )}
+                </div>
+              ) : (
+                <Badge variant="destructive" className="text-[10px]">
+                  No Data
+                </Badge>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              {!status?.is_up_to_date ? (
+                <Button onClick={updateData} disabled={loading} size="sm">
+                  {loading ? (
+                    <RiLoader4Line className="mr-2 size-3.5 animate-spin" />
+                  ) : (
+                    <RiDownloadCloudLine className="mr-2 size-3.5" />
+                  )}
+                  {loading ? "Updating..." : "Update"}
+                </Button>
+              ) : (
+                <Button
+                  variant="ghost"
+                  size="icon-sm"
+                  onClick={updateData}
+                  disabled={loading}
+                  title="Check for updates"
+                >
+                  <RiRefreshLine
+                    className={`size-4 ${loading ? "animate-spin" : ""}`}
+                  />
+                </Button>
+              )}
+
+              {!loadedFromMemory && status?.current_version && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={loadLocalData}
+                  disabled={loading}
+                >
+                  <RiDatabase2Line className="mr-2 size-3.5" /> Load
+                </Button>
+              )}
             </div>
           </div>
 
-          <div className="flex flex-wrap gap-2">
-            {!status?.is_up_to_date ? (
-              <Button onClick={updateData} disabled={loading}>
-                {loading ? (
-                  <RiLoader4Line className="mr-2 size-4 animate-spin" />
-                ) : (
-                  <RiDownloadCloudLine className="mr-2 size-4" />
-                )}
-                {loading
-                  ? "Downloading..."
-                  : status?.current_version
-                    ? "Update Data"
-                    : "Install Data"}
-              </Button>
-            ) : (
-              <Button
-                variant="outline"
-                onClick={updateData}
-                disabled={loading}
-                className="text-muted-foreground"
-              >
-                {loading ? (
-                  <RiLoader4Line className="mr-2 size-4 animate-spin" />
-                ) : (
-                  <RiRefreshLine className="mr-2 size-4" />
-                )}
-                Sync
-              </Button>
-            )}
-
-            {!loadedFromMemory && status?.current_version && (
-              <Button
-                variant="secondary"
-                onClick={loadLocalData}
-                disabled={loading}
-              >
-                <RiDatabase2Line className="mr-2 size-4" /> Load
-              </Button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      {!loadedFromMemory ? (
-        <div className="flex flex-1 items-center justify-center p-8">
-          <div className="border-border bg-muted/20 flex h-64 w-full max-w-lg flex-col items-center justify-center gap-4 rounded-lg border border-dashed text-center">
-            <div className="bg-muted flex size-12 items-center justify-center rounded-full">
-              <RiDatabase2Line className="text-muted-foreground size-6" />
-            </div>
-            <div className="max-w-xs space-y-1">
-              <h3 className="font-medium">No Data Loaded</h3>
-              <p className="text-muted-foreground text-xs">
-                Load the data from your local storage or download the latest
-                version to view champion stats.
-              </p>
-            </div>
-            {status?.current_version && (
-              <Button onClick={loadLocalData} disabled={loading} size="sm">
-                Load Now
-              </Button>
-            )}
-          </div>
-        </div>
-      ) : (
-        <>
-          {/* Controls - Fixed below header */}
-          <div className="border-border bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-10 flex-none border-b px-8 py-4 backdrop-blur">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="relative max-w-sm flex-1">
-                <RiSearchLine className="text-muted-foreground absolute top-2.5 left-2 size-4" />
+          {/* Search & Stats */}
+          {loadedFromMemory && (
+            <div className="flex items-center gap-4">
+              <div className="relative max-w-md flex-1">
+                <RiSearchLine className="text-muted-foreground absolute top-2.5 left-2.5 size-4" />
                 <Input
-                  placeholder="Search by name or tag..."
-                  className="pl-8"
+                  placeholder="Search champions..."
+                  className="bg-background/50 pl-9"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
-
-              {/* Simple result counter */}
-              <div className="text-muted-foreground text-right text-xs">
-                Showing {startIndex + 1}-
+              <div className="text-muted-foreground hidden text-xs sm:block">
+                {startIndex + 1}-
                 {Math.min(startIndex + ITEMS_PER_PAGE, filtered.length)} of{" "}
                 {filtered.length}
               </div>
             </div>
-          </div>
+          )}
+        </div>
+      </div>
 
-          {/* Grid Area - Scrollable */}
-          <div
-            className="flex-1 overflow-y-auto p-8"
-            id="champion-scroll-container"
-          >
-            <div
-              id="champion-grid-top"
-              className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
-            >
+      {/* Main Content Area - Scrollable */}
+      <div
+        id="champion-scroll-container"
+        className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6"
+      >
+        {!loadedFromMemory ? (
+          <div className="flex h-full items-center justify-center">
+            <div className="border-border bg-muted/20 flex flex-col items-center justify-center gap-4 rounded-xl border border-dashed p-12 text-center">
+              <div className="bg-background flex size-12 items-center justify-center rounded-full shadow-sm ring-1 ring-gray-900/5 ring-inset">
+                <RiDatabase2Line className="text-muted-foreground size-6" />
+              </div>
+              <div className="max-w-xs space-y-1">
+                <h3 className="font-semibold">No Data Loaded</h3>
+                <p className="text-muted-foreground text-sm">
+                  Load local data or download the latest version to view
+                  champions.
+                </p>
+              </div>
+              {status?.current_version && (
+                <Button onClick={loadLocalData} disabled={loading} size="sm">
+                  Load Data
+                </Button>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-8 pb-8">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
               {paginatedChampions.map((champ) => (
                 <ChampionCard key={champ.key} champion={champ} />
               ))}
@@ -241,79 +240,82 @@ export default function ChampionViewer() {
                 No champions found matching "{search}"
               </div>
             )}
-          </div>
 
-          {/* Pagination Controls - Fixed Footer */}
-          {totalPages > 1 && (
-            <div className="border-border bg-background flex-none border-t p-4">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={() =>
-                        handlePageChange(Math.max(1, currentPage - 1))
-                      }
-                      className={
-                        currentPage === 1
-                          ? "pointer-events-none opacity-50"
-                          : ""
-                      }
-                    />
-                  </PaginationItem>
-
-                  {/* Logic for smart page numbers (ellipsis) */}
-                  {Array.from({ length: totalPages }, (_, i) => i + 1)
-                    .filter((page) => {
-                      // Show first, last, current, and adjacent pages
-                      return (
-                        page === 1 ||
-                        page === totalPages ||
-                        Math.abs(page - currentPage) <= 1
-                      );
-                    })
-                    .reduce<(number | string)[]>((acc, page, index, array) => {
-                      if (index > 0) {
-                        const prevPage = array[index - 1];
-                        if (page - prevPage > 1) {
-                          acc.push("ellipsis-" + index); // Unique key for mapping
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex justify-center">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        onClick={() =>
+                          handlePageChange(Math.max(1, currentPage - 1))
                         }
-                      }
-                      acc.push(page);
-                      return acc;
-                    }, [])
-                    .map((item) => (
-                      <PaginationItem key={item}>
-                        {typeof item === "string" ? (
-                          <PaginationEllipsis />
-                        ) : (
-                          <PaginationLink
-                            isActive={currentPage === item}
-                            onClick={() => handlePageChange(item as number)}
-                          >
-                            {item}
-                          </PaginationLink>
-                        )}
-                      </PaginationItem>
-                    ))}
+                        className={
+                          currentPage === 1
+                            ? "pointer-events-none opacity-50"
+                            : "cursor-pointer"
+                        }
+                      />
+                    </PaginationItem>
 
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={() =>
-                        handlePageChange(Math.min(totalPages, currentPage + 1))
-                      }
-                      className={
-                        currentPage === totalPages
-                          ? "pointer-events-none opacity-50"
-                          : ""
-                      }
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
-        </>
-      )}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                      .filter(
+                        (page) =>
+                          page === 1 ||
+                          page === totalPages ||
+                          Math.abs(page - currentPage) <= 1,
+                      )
+                      .reduce<(number | string)[]>(
+                        (acc, page, index, array) => {
+                          if (index > 0) {
+                            const prevPage = array[index - 1];
+                            if (page - prevPage > 1) {
+                              acc.push("ellipsis-" + index);
+                            }
+                          }
+                          acc.push(page);
+                          return acc;
+                        },
+                        [],
+                      )
+                      .map((item) => (
+                        <PaginationItem key={item}>
+                          {typeof item === "string" ? (
+                            <PaginationEllipsis />
+                          ) : (
+                            <PaginationLink
+                              isActive={currentPage === item}
+                              onClick={() => handlePageChange(item as number)}
+                              className="cursor-pointer"
+                            >
+                              {item}
+                            </PaginationLink>
+                          )}
+                        </PaginationItem>
+                      ))}
+
+                    <PaginationItem>
+                      <PaginationNext
+                        onClick={() =>
+                          handlePageChange(
+                            Math.min(totalPages, currentPage + 1),
+                          )
+                        }
+                        className={
+                          currentPage === totalPages
+                            ? "pointer-events-none opacity-50"
+                            : "cursor-pointer"
+                        }
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
