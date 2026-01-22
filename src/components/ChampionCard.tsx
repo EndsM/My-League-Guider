@@ -154,6 +154,9 @@ function StatBar({
       <div className="bg-muted text-muted-foreground flex size-6 items-center justify-center rounded-sm">
         <Icon className="size-3.5" />
       </div>
+      <span className="text-muted-foreground text-[10px] font-bold">
+        {label}
+      </span>
       <div className="bg-secondary h-1.5 w-full overflow-hidden rounded-full">
         <div
           className={cn("h-full rounded-full opacity-80", color)}

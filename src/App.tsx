@@ -14,7 +14,7 @@ export function App() {
   const [activeTab, setActiveTab] = useState<Tab>("dashboard");
 
   return (
-    <div className="bg-background text-foreground flex h-screen w-full overflow-hidden">
+    <div className="bg-background text-foreground flex h-full w-full overflow-hidden">
       {/* Sidebar */}
       <aside className="bg-muted/30 flex w-52 shrink-0 flex-col gap-4 border-r p-3">
         <div className="flex items-center gap-2 px-2 py-4">
