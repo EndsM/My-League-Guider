@@ -24,7 +24,7 @@ import { ChampionCard } from "./components/ChampionCard";
 
 const ITEMS_PER_PAGE = 24;
 
-export default function ChampionViewer() {
+export default function ChampionPage() {
   const [status, setStatus] = useState<DataStatus | null>(null);
   const [champions, setChampions] = useState<Champion[]>([]);
   const [loading, setLoading] = useState(false);

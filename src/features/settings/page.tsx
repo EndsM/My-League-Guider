@@ -27,7 +27,7 @@ const DEFAULT_FORM_DATA = {
   apiKey: "",
 };
 
-export default function SettingsManager() {
+export default function SettingsPage() {
   const [profiles, setProfiles] = useState<AiProfile[]>([]);
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
