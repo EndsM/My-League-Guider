@@ -117,143 +117,149 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8">
-      <div>
-        <h2 className="text-3xl font-bold tracking-tight">AI Configuration</h2>
-        <p className="text-muted-foreground mt-2">
-          Manage your AI providers and API keys securely.
-        </p>
-      </div>
+    <div className="h-full w-full overflow-y-auto p-6 md:p-8">
+      <div className="mx-auto max-w-4xl space-y-8">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">
+            AI Configuration
+          </h2>
+          <p className="text-muted-foreground mt-2">
+            Manage your AI providers and API keys securely.
+          </p>
+        </div>
 
-      <div className="grid items-start gap-8 lg:grid-cols-[1fr_300px]">
-        {/* Left Column: Form */}
-        <Card className="border">
-          <CardHeader>
-            <CardTitle>
-              {isEditing ? "Edit Profile" : "Add New Profile"}
-            </CardTitle>
-            <CardDescription>
-              Configure the connection details for your LLM provider.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form
-              id="ai-profile-form"
-              onSubmit={handleSave}
-              className="space-y-4"
-            >
-              <div className="space-y-2">
-                <Label htmlFor="name">Profile Name</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  placeholder="e.g., OpenAI, Local LLM"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                />
-              </div>
+        <div className="grid items-start gap-8 lg:grid-cols-[1fr_300px]">
+          {/* Left Column: Form */}
+          <Card className="border">
+            <CardHeader>
+              <CardTitle>
+                {isEditing ? "Edit Profile" : "Add New Profile"}
+              </CardTitle>
+              <CardDescription>
+                Configure the connection details for your LLM provider.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form
+                id="ai-profile-form"
+                onSubmit={handleSave}
+                className="space-y-4"
+              >
+                <div className="space-y-2">
+                  <Label htmlFor="name">Profile Name</Label>
+                  <Input
+                    id="name"
+                    name="name"
+                    placeholder="e.g., OpenAI, Local LLM"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="endpoint">API Endpoint</Label>
-                <Input
-                  id="endpoint"
-                  name="endpoint"
-                  placeholder="https://api.openai.com/v1/chat/completions"
-                  value={formData.endpoint}
-                  onChange={handleInputChange}
-                />
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="endpoint">API Endpoint</Label>
+                  <Input
+                    id="endpoint"
+                    name="endpoint"
+                    placeholder="https://api.openai.com/v1/chat/completions"
+                    value={formData.endpoint}
+                    onChange={handleInputChange}
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="model">Model Name</Label>
-                <Input
-                  id="model"
-                  name="model"
-                  placeholder="e.g., gpt-4o, llama-3"
-                  value={formData.model}
-                  onChange={handleInputChange}
-                />
-              </div>
+                <div className="space-y-2">
+                  <Label htmlFor="model">Model Name</Label>
+                  <Input
+                    id="model"
+                    name="model"
+                    placeholder="e.g., gpt-4o, llama-3"
+                    value={formData.model}
+                    onChange={handleInputChange}
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="apiKey">
-                  API Key{" "}
-                  {isEditing && (
-                    <span className="text-muted-foreground font-normal">
-                      (Leave blank to keep existing)
-                    </span>
-                  )}
-                </Label>
-                <Input
-                  id="apiKey"
-                  name="apiKey"
-                  type="password"
-                  placeholder="sk-..."
-                  value={formData.apiKey}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </form>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            {isEditing ? (
-              <Button type="button" variant="ghost" onClick={resetForm}>
-                <RiCloseLine className="mr-2 size-4" /> Cancel
-              </Button>
-            ) : (
-              <div />
-            )}
-            <Button type="submit" form="ai-profile-form" disabled={loading}>
-              {loading ? (
-                "Saving..."
+                <div className="space-y-2">
+                  <Label htmlFor="apiKey">
+                    API Key{" "}
+                    {isEditing && (
+                      <span className="text-muted-foreground font-normal">
+                        (Leave blank to keep existing)
+                      </span>
+                    )}
+                  </Label>
+                  <Input
+                    id="apiKey"
+                    name="apiKey"
+                    type="password"
+                    placeholder="sk-..."
+                    value={formData.apiKey}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </form>
+            </CardContent>
+            <CardFooter className="flex justify-between">
+              {isEditing ? (
+                <Button type="button" variant="ghost" onClick={resetForm}>
+                  <RiCloseLine className="mr-2 size-4" /> Cancel
+                </Button>
               ) : (
-                <>
-                  <RiSaveLine className="mr-2 size-4" /> Save Profile
-                </>
+                <div />
               )}
-            </Button>
-          </CardFooter>
-        </Card>
+              <Button type="submit" form="ai-profile-form" disabled={loading}>
+                {loading ? (
+                  "Saving..."
+                ) : (
+                  <>
+                    <RiSaveLine className="mr-2 size-4" /> Save Profile
+                  </>
+                )}
+              </Button>
+            </CardFooter>
+          </Card>
 
-        {/* Right Column: List */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold">Saved Profiles</h3>
-          {profiles.length === 0 ? (
-            <div className="text-muted-foreground rounded-md border border-dashed p-4 text-center text-sm italic">
-              No profiles found.
-            </div>
-          ) : (
-            <div className="grid gap-3">
-              {profiles.map((profile) => (
-                <Card key={profile.id} className="overflow-hidden">
-                  <CardHeader className="p-4 pb-2">
-                    <CardTitle className="text-base">{profile.name}</CardTitle>
-                    <CardDescription className="truncate text-xs">
-                      {profile.model}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardFooter className="bg-muted/40 flex justify-end gap-1 p-2">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-8 px-2"
-                      onClick={() => handleEdit(profile)}
-                    >
-                      <RiEditLine className="text-muted-foreground size-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="hover:text-destructive h-8 px-2"
-                      onClick={() => handleDelete(profile.id)}
-                    >
-                      <RiDeleteBinLine className="size-4" />
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          )}
+          {/* Right Column: List */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Saved Profiles</h3>
+            {profiles.length === 0 ? (
+              <div className="text-muted-foreground rounded-md border border-dashed p-4 text-center text-sm italic">
+                No profiles found.
+              </div>
+            ) : (
+              <div className="grid gap-3">
+                {profiles.map((profile) => (
+                  <Card key={profile.id} className="overflow-hidden">
+                    <CardHeader className="p-4 pb-2">
+                      <CardTitle className="text-base">
+                        {profile.name}
+                      </CardTitle>
+                      <CardDescription className="truncate text-xs">
+                        {profile.model}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardFooter className="bg-muted/40 flex justify-end gap-1 p-2">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-8 px-2"
+                        onClick={() => handleEdit(profile)}
+                      >
+                        <RiEditLine className="text-muted-foreground size-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="hover:text-destructive h-8 px-2"
+                        onClick={() => handleDelete(profile.id)}
+                      >
+                        <RiDeleteBinLine className="size-4" />
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
