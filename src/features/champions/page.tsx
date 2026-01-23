@@ -1,3 +1,15 @@
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { Champion, DataStatus } from "@/types";
 import {
   RiDatabase2Line,
@@ -8,19 +20,7 @@ import {
 } from "@remixicon/react";
 import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useState } from "react";
-import { ChampionCard } from "./ChampionCard";
-import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "./ui/pagination";
+import { ChampionCard } from "./components/ChampionCard";
 
 const ITEMS_PER_PAGE = 24;
 

@@ -1,3 +1,12 @@
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { Champion } from "@/types";
 import {
@@ -11,15 +20,6 @@ import {
   RiSwordLine,
 } from "@remixicon/react";
 import { type ElementType } from "react";
-import { Badge } from "./ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
-import { Separator } from "./ui/separator";
 
 export function ChampionCard({ champion }: { champion: Champion }) {
   const imageUrl = `https://ddragon.leagueoflegends.com/cdn/${champion.version}/img/champion/${champion.image.full}`;

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { AiProfile } from "../types";
 import { invoke } from "@tauri-apps/api/core";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +17,7 @@ import {
   RiSaveLine,
   RiCloseLine,
 } from "@remixicon/react";
+import { AiProfile } from "@/types";
 
 const DEFAULT_FORM_DATA = {
   id: "",
