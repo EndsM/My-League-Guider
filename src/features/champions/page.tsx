@@ -1,3 +1,4 @@
+import { championApi } from "@/api/champions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +19,6 @@ import {
   RiRefreshLine,
   RiSearchLine,
 } from "@remixicon/react";
-import { invoke } from "@tauri-apps/api/core";
 import { useEffect, useState } from "react";
 import { ChampionCard } from "./components/ChampionCard";
 
@@ -47,7 +47,7 @@ export default function ChampionPage() {
 
   async function checkStatus() {
     try {
-      const s = await invoke<DataStatus>("get_data_status");
+      const s = await championApi.getStatus();
       setStatus(s);
     } catch (e) {
       console.error(e);
@@ -57,7 +57,7 @@ export default function ChampionPage() {
   async function updateData() {
     setLoading(true);
     try {
-      await invoke("update_data");
+      await championApi.updateData();
       await checkStatus();
       await fetchChampions();
     } catch (e) {
@@ -70,7 +70,7 @@ export default function ChampionPage() {
   async function loadLocalData() {
     setLoading(true);
     try {
-      await invoke("load_local_data");
+      await championApi.loadLocalData();
       await fetchChampions();
     } catch (e) {
       alert("Load failed: " + e);
@@ -81,7 +81,7 @@ export default function ChampionPage() {
 
   async function fetchChampions(silent = false) {
     try {
-      const data = await invoke<Champion[]>("get_champions");
+      const data = await championApi.getAll();
       setChampions(data);
       setLoadedFromMemory(true);
     } catch (e) {

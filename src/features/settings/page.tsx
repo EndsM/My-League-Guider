@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
+import { aiApi } from "@/api/ai";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -39,7 +39,7 @@ export default function SettingsPage() {
 
   async function loadProfiles() {
     try {
-      const data = await invoke<AiProfile[]>("get_ai_profiles");
+      const data = await aiApi.getProfiles();
       setProfiles(data);
     } catch (error) {
       console.error("Failed to load profiles:", error);
@@ -91,10 +91,7 @@ export default function SettingsPage() {
         model: formData.model,
       };
 
-      await invoke("save_ai_profile", {
-        profile: profilePayload,
-        apiKey: formData.apiKey,
-      });
+      await aiApi.saveProfile(profilePayload, formData.apiKey);
 
       await loadProfiles();
       resetForm();
@@ -110,7 +107,7 @@ export default function SettingsPage() {
     if (!confirm("Are you sure you want to delete this profile?")) return;
 
     try {
-      await invoke("delete_ai_profile", { id });
+      await aiApi.deleteProfile(id);
       await loadProfiles();
       if (formData.id === id) resetForm();
     } catch (error) {
