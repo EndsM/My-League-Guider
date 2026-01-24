@@ -2,6 +2,7 @@ use crate::data::champion::Champion;
 use crate::data::item::Item;
 use serde::Serialize;
 use std::collections::HashMap;
+use std::fmt::format;
 
 #[derive(Debug, Serialize, Clone)]
 pub struct ChampionContext {
@@ -83,6 +84,18 @@ impl From<Champion> for ChampionContext {
                 attack_speed_per_level: c.stats.attack_speed_per_level,
             },
         }
+    }
+}
+
+impl ChampionContext {
+    fn to_context(&self) -> Vec<String> {
+        let roles_str = self.roles.join(", ");
+        let basic_description = format!(
+            "{}, otherwise known as {}, is a {}. {}",
+            self.name, self.title, roles_str, self.lore_snippet
+        );
+        let role_position = format!("{}'s official positioning is having attack focus of {} out of 10, defence focus of {} out of 10, magic focus of {} out of 10 and difficulty evaluation of {} out of 10.", self.name,self.role_info.attack,self.role_info.defense,self.role_info.magic,self.role_info.difficulty);
+        vec![basic_description, role_position]
     }
 }
 
