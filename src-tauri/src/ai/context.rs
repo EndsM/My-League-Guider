@@ -95,7 +95,70 @@ impl ChampionContext {
             self.name, self.title, roles_str, self.lore_snippet
         );
         let role_position = format!("{}'s official positioning is having attack focus of {} out of 10, defence focus of {} out of 10, magic focus of {} out of 10 and difficulty evaluation of {} out of 10.", self.name,self.role_info.attack,self.role_info.defense,self.role_info.magic,self.role_info.difficulty);
-        vec![basic_description, role_position]
+
+        let casting_resource_description = if self.resource_type == "Mana" {
+            "Champion uses mana as casting resource, which is basic resource for skills that have simple mechanism".to_string()
+        } else {
+            format!("Champion uses {} as casting resource.", self.resource_type)
+        };
+
+        let stat_growth_description = format!(
+            "{}'s stat growth per level is: {} Health, {} {}, {} Armor, {} Magic Resist, {} Attack Damage, {}% Attack Speed, {} HP Regeneration, and {} {} Regeneration.",
+            self.name,
+            self.stats.hp_per_level,
+            self.stats.mp_per_level,
+            self.resource_type,
+            self.stats.armor_per_level,
+            self.stats.spell_block_per_level,
+            self.stats.attack_damage_per_level,
+            self.stats.attack_speed_per_level,
+            self.stats.hp_regen_per_level,
+            self.stats.mp_regen_per_level,
+            self.resource_type
+        );
+
+        let base_stats_description = format!(
+            "{} has the following base stats at level 1:\n\
+            Health: {} (+{} per level)\n\
+            {}: {} (+{} per level)\n\
+            Movement Speed: {}\n\
+            Armor: {} (+{} per level)\n\
+            Magic Resist: {} (+{} per level)\n\
+            Attack Damage: {} (+{} per level)\n\
+            Base Attack Speed: {} (+{}% per level)\n\
+            Attack Range: {}\n\
+            HP Regeneration: {} (+{} per level)\n\
+            {} Regeneration: {} (+{} per level)",
+            self.name,
+            self.stats.hp,
+            self.stats.hp_per_level,
+            self.resource_type,
+            self.stats.mp,
+            self.stats.mp_per_level,
+            self.stats.move_speed,
+            self.stats.armor,
+            self.stats.armor_per_level,
+            self.stats.spell_block,
+            self.stats.spell_block_per_level,
+            self.stats.attack_damage,
+            self.stats.attack_damage_per_level,
+            self.stats.attack_speed,
+            self.stats.attack_speed_per_level,
+            self.stats.attack_range,
+            self.stats.hp_regen,
+            self.stats.hp_regen_per_level,
+            self.resource_type,
+            self.stats.mp_regen,
+            self.stats.mp_regen_per_level
+        );
+
+        vec![
+            basic_description,
+            role_position,
+            casting_resource_description,
+            stat_growth_description,
+            base_stats_description,
+        ]
     }
 }
 
