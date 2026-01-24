@@ -91,11 +91,16 @@ pub struct ItemContext {
     pub name: String,
     pub description: String,
     pub gold_cost: u32,
+    pub gold_base: u32,
+    pub gold_sell: u32,
     pub stats: HashMap<String, f64>,
     pub tags: Vec<String>,
     pub builds_from: Vec<String>,
     pub builds_into: Vec<String>,
     pub required_champion: Option<String>,
+    pub maps: HashMap<String, bool>,
+    pub stacks: u32,
+    pub consumed: bool,
 }
 
 impl From<Item> for ItemContext {
@@ -112,11 +117,16 @@ impl From<Item> for ItemContext {
             name: i.name,
             description,
             gold_cost: i.gold.total,
+            gold_base: i.gold.base,
+            gold_sell: i.gold.sell,
             stats: i.stats,
             tags: i.tags,
             builds_from: i.from,
             builds_into: i.into,
             required_champion: i.required_champion,
+            maps: i.maps,
+            stacks: i.stacks,
+            consumed: i.consumed,
         }
     }
 }
