@@ -1,3 +1,5 @@
+mod context;
+
 use keyring::Entry;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
