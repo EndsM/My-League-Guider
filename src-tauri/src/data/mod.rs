@@ -1,6 +1,6 @@
-mod champion;
-mod item;
-mod manager;
+pub mod champion;
+pub mod item;
+pub mod manager;
 
 use crate::data::{
     champion::{Champion, ChampionData},

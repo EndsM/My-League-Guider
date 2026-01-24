@@ -1,4 +1,4 @@
-mod context;
+pub mod context;
 
 use keyring::Entry;
 use reqwest::Client;
