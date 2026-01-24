@@ -79,14 +79,6 @@ open class RustPlugin : Plugin<Project> {
                         targetBuildTask
                     )
                 }
-
-                if (profile == "release") {
-                    extensions.configure<ApplicationExtension> {
-                        buildTypes.getByName("release") {
-                            signingConfig = signingConfigs.getByName("release")
-                        }
-                    }
-                }
             }
         }
     }

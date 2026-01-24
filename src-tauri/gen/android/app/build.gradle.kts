@@ -1,4 +1,5 @@
 import java.util.Properties
+import java.io.FileInputStream
 
 plugins {
     id("com.android.application")
@@ -29,7 +30,7 @@ android {
             val keystorePropertiesFile = rootProject.file("keystore.properties")
             val keystoreProperties = Properties()
             if (keystorePropertiesFile.exists()) {
-                keystorePropertiesFile.inputStream().use { keystoreProperties.load(it) }
+                keystoreProperties.load(FileInputStream(keystorePropertiesFile))
             }
 
             keyAlias = keystoreProperties["keyAlias"] as String
@@ -52,6 +53,7 @@ android {
         }
         getByName("release") {
             isMinifyEnabled = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 *fileTree(".") { include("**/*.pro") }
                     .plus(getDefaultProguardFile("proguard-android-optimize.txt"))
