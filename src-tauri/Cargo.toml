@@ -25,7 +25,7 @@ serde_json = "1"
 
 reqwest = { version = "0.13.4", default-features = false, features = ["json"] }
 tokio = { version = "1", features = ["full"] }
-keyring = { version = "4", features = [] }
+keyring = { version = "4", features = ["android-native-keyring-store"] }
 
 
 [dependencies.uuid]
