@@ -29,7 +29,7 @@ keyring = { version = "4", features = ["android-native-keyring-store"] }
 
 
 [dependencies.uuid]
-version = "1.19.0"
+version = "1.24.0"
 # Lets you generate random UUIDs
 features = [
     "v4",
