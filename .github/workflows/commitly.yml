@@ -139,8 +139,6 @@ jobs:
 
       - name: Build Android APK
         run: npx tauri android build
-        env:
-          NDK_HOME: ${{ env.ANDROID_NDK_LATEST_HOME }}
 
       - name: Upload APK to Release
         uses: softprops/action-gh-release@v2
