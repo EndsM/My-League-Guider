@@ -15,7 +15,7 @@ import {
   RiDatabase2Line,
   RiSettings3Line,
 } from "@remixicon/react";
-import { NavLink } from "react-router";
+import { NavLink, useLocation } from "react-router";
 
 // Menu items configuration
 const items = [
@@ -37,23 +37,21 @@ const items = [
 ];
 
 export function AppSidebar() {
+  const location = useLocation();
+
   return (
     <Sidebar variant="sidebar" collapsible="icon">
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <a href="#">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <RiDatabase2Line className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">
-                    My League Guider
-                  </span>
-                  <span className="truncate text-xs">Tauri App</span>
-                </div>
-              </a>
+            <SidebarMenuButton size="lg" render={<a href="#" />}>
+              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                <RiDatabase2Line className="size-4" />
+              </div>
+              <div className="grid flex-1 text-left text-sm leading-tight">
+                <span className="truncate font-semibold">My League Guider</span>
+                <span className="truncate text-xs">Tauri App</span>
+              </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -63,22 +61,27 @@ export function AppSidebar() {
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
-                    <NavLink to={item.url}>
-                      {({ isActive }) => (
-                        <>
-                          <item.icon />
-                          <span className={isActive ? "font-medium" : ""}>
-                            {item.title}
-                          </span>
-                        </>
-                      )}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {items.map((item) => {
+                const isActive =
+                  item.url === "/"
+                    ? location.pathname === "/"
+                    : location.pathname.startsWith(item.url);
+
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      isActive={isActive}
+                      tooltip={item.title}
+                      render={<NavLink to={item.url} />}
+                    >
+                      <item.icon />
+                      <span className={isActive ? "font-medium" : ""}>
+                        {item.title}
+                      </span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
