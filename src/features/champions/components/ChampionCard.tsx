@@ -7,7 +7,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
 import { Champion } from "@/types";
 import {
   RiCrosshair2Line,
@@ -19,6 +18,7 @@ import {
   RiSpeedLine,
   RiSwordLine,
 } from "@remixicon/react";
+import { cn } from "cn";
 import { type ElementType } from "react";
 
 export function ChampionCard({ champion }: { champion: Champion }) {
